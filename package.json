@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "npx serve .",
+    "build": "mkdir -p dist && cp index.html dist/ && mkdir -p dist/src && cp src/games.json dist/src/",
     "lint": "echo 'No linting configured'"
   },
   "dependencies": {
