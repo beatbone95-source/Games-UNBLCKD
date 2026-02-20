@@ -7,157 +7,240 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
         
         :root {
-            --font-sans: 'Inter', sans-serif;
-            --bg: #ffffff;
-            --fg: #111111;
-            --muted: #71717a;
-            --border: #e4e4e7;
-            --accent: #000000;
+            --font-sans: 'Nunito', sans-serif;
+            --bg: #4c2f91;
+            --card-bg: #ffffff;
+            --accent: #ffcc00;
+            --text: #ffffff;
+            --card-text: #333333;
         }
 
         body {
             background-color: var(--bg);
-            color: var(--fg);
+            color: var(--text);
             font-family: var(--font-sans);
             -webkit-font-smoothing: antialiased;
             margin: 0;
+            background-image: radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+                              radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
         }
 
         .game-card {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 0;
-            transition: all 0.2s ease;
+            background: var(--card-bg);
+            border-radius: 1.25rem;
+            overflow: hidden;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            position: relative;
         }
 
         .game-card:hover {
+            transform: scale(1.05) rotate(1deg);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        .game-card img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            border-bottom: 4px solid var(--accent);
+        }
+
+        .game-card-info {
+            padding: 0.75rem;
+            text-align: center;
+        }
+
+        .game-card-title {
+            color: var(--card-text);
+            font-weight: 700;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .search-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 9999px;
+            padding: 0.5rem 1.5rem;
+            display: flex;
+            items-center: center;
+            gap: 0.75rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .search-container:focus-within {
+            background: rgba(255, 255, 255, 0.25);
             border-color: var(--accent);
-            transform: translateY(-2px);
+            transform: scale(1.02);
         }
 
         .search-input {
             background: transparent;
             border: none;
-            border-bottom: 1px solid var(--border);
-            border-radius: 0;
-            padding: 0.5rem 0;
+            color: white;
+            font-weight: 600;
             width: 100%;
-            transition: border-color 0.2s;
+            outline: none;
         }
 
-        .search-input:focus {
-            outline: none;
-            border-color: var(--accent);
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
         }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 4px;
+            width: 10px;
         }
         ::-webkit-scrollbar-track {
             background: var(--bg);
         }
         ::-webkit-scrollbar-thumb {
-            background: var(--border);
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--muted);
+            background: var(--accent);
+            border-radius: 9999px;
+            border: 3px solid var(--bg);
         }
 
         .modal-backdrop {
-            background: rgba(255, 255, 255, 0.98);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
         }
 
-        .btn-minimal {
-            padding: 0.5rem;
-            border: 1px solid var(--border);
-            background: transparent;
-            cursor: pointer;
+        .modal-content {
+            background: #1a1a1a;
+            border-radius: 2rem;
+            overflow: hidden;
+            border: 4px solid var(--accent);
+        }
+
+        .play-button {
+            background: var(--accent);
+            color: #000;
+            font-weight: 800;
+            padding: 0.5rem 1.5rem;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
             transition: all 0.2s;
         }
 
-        .btn-minimal:hover {
-            border-color: var(--accent);
-            background: #f4f4f5;
+        .play-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px var(--accent);
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
     <!-- Header -->
-    <header class="border-b border-border bg-white sticky top-0 z-40">
-        <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-baseline justify-between gap-8">
-            <div class="flex flex-col">
-                <h1 class="text-2xl font-light tracking-tight">
-                    Games<span class="font-semibold">Hub</span>
+    <header class="sticky top-0 z-40 bg-[#4c2f91]/90 backdrop-blur-md py-4 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.reload()">
+                <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center rotate-3 shadow-lg">
+                    <i data-lucide="gamepad-2" class="text-[#4c2f91] w-8 h-8"></i>
+                </div>
+                <h1 class="text-3xl font-extrabold tracking-tighter italic">
+                    POKI<span class="text-accent">HUB</span>
                 </h1>
-                <p class="text-[10px] uppercase tracking-[0.2em] text-muted mt-1">Minimalist Collection</p>
             </div>
 
-            <div class="w-full sm:w-64">
-                <input
-                    type="text"
-                    id="searchInput"
-                    placeholder="Search..."
-                    class="search-input text-sm"
-                />
+            <div class="w-full md:w-96">
+                <div class="search-container">
+                    <i data-lucide="search" class="w-5 h-5 text-white/60"></i>
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search for games..."
+                        class="search-input"
+                    />
+                </div>
+            </div>
+
+            <div class="hidden lg:flex items-center gap-6 font-bold text-sm">
+                <a href="#" class="hover:text-accent transition-colors">NEW</a>
+                <a href="#" class="hover:text-accent transition-colors">POPULAR</a>
+                <a href="#" class="hover:text-accent transition-colors">ACTION</a>
             </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="flex-1 max-w-6xl mx-auto px-6 py-12 w-full">
-        <div id="gamesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+    <main class="flex-1 max-w-7xl mx-auto px-6 py-8 w-full">
+        <div id="gamesGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
             <!-- Games will be injected here -->
         </div>
 
         <div id="noResults" class="hidden text-center py-20">
-            <p class="text-muted font-light italic">No matches found.</p>
+            <div class="bg-white/10 rounded-3xl p-12 inline-block">
+                <i data-lucide="ghost" class="w-16 h-16 mx-auto mb-4 text-white/20"></i>
+                <p class="text-xl font-bold opacity-50">Oops! No games found.</p>
+            </div>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-border py-12 mt-auto">
-        <div class="max-w-6xl mx-auto px-6 flex justify-between items-center text-[10px] uppercase tracking-widest text-muted">
-            <p>© 2026 Collection</p>
-            <div class="flex gap-6">
-                <a href="#" class="hover:text-black transition-colors">About</a>
-                <a href="#" class="hover:text-black transition-colors">Privacy</a>
+    <footer class="py-12 mt-auto">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="flex justify-center gap-8 mb-6 text-sm font-bold opacity-60">
+                <a href="#" class="hover:text-accent transition-colors">DEVELOPERS</a>
+                <a href="#" class="hover:text-accent transition-colors">KIDS</a>
+                <a href="#" class="hover:text-accent transition-colors">PARENTS</a>
+                <a href="#" class="hover:text-accent transition-colors">TERMS</a>
             </div>
+            <p class="text-xs font-bold opacity-30 uppercase tracking-widest">© 2026 POKIHUB CLONE</p>
         </div>
     </footer>
 
     <!-- Game Modal -->
-    <div id="gameModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-0 sm:p-12 modal-backdrop">
-        <div id="modalContent" class="bg-white border border-border flex flex-col w-full max-w-6xl h-full sm:h-[90vh]">
+    <div id="gameModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 sm:p-8 modal-backdrop">
+        <div id="modalContent" class="modal-content flex flex-col w-full max-w-6xl h-[85vh] shadow-2xl">
             <!-- Modal Header -->
-            <div class="px-8 py-6 border-b border-border flex items-center justify-between">
-                <div class="flex flex-col">
-                    <h2 id="modalTitle" class="text-lg font-medium">Game Title</h2>
-                    <p class="text-[10px] uppercase tracking-widest text-muted">Now Playing</p>
+            <div class="px-6 py-4 bg-[#1a1a1a] flex items-center justify-between border-b border-white/5">
+                <div class="flex items-center gap-4">
+                    <h2 id="modalTitle" class="text-xl font-extrabold italic">Game Title</h2>
+                    <div class="flex gap-1">
+                        <i data-lucide="star" class="w-4 h-4 text-accent fill-accent"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-accent fill-accent"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-accent fill-accent"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-accent fill-accent"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-accent"></i>
+                    </div>
                 </div>
                 <div class="flex items-center gap-4">
-                    <button id="fullscreenBtn" class="text-muted hover:text-black transition-colors" title="Fullscreen">
-                        <i data-lucide="maximize" class="w-4 h-4"></i>
+                    <button id="fullscreenBtn" class="p-2 hover:bg-white/10 rounded-xl transition-colors text-white/60 hover:text-white">
+                        <i data-lucide="maximize" class="w-6 h-6"></i>
                     </button>
-                    <button id="closeModalBtn" class="text-muted hover:text-black transition-colors">
-                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <button id="closeModalBtn" class="p-2 hover:bg-white/10 rounded-xl transition-colors text-white/60 hover:text-white">
+                        <i data-lucide="x" class="w-8 h-8"></i>
                     </button>
                 </div>
             </div>
 
             <!-- Game Iframe -->
-            <div class="flex-1 bg-white relative">
+            <div class="flex-1 bg-black relative">
                 <iframe id="gameIframe" src="" class="w-full h-full border-none" allowfullscreen></iframe>
             </div>
 
             <!-- Modal Footer -->
-            <div class="px-8 py-4 border-t border-border flex items-center justify-between text-[10px] uppercase tracking-widest text-muted">
-                <p>Unblocked Games Hub</p>
-                <a id="sourceLink" href="#" target="_blank" rel="noopener noreferrer" class="hover:text-black transition-colors flex items-center gap-1">
-                    Source <i data-lucide="external-link" class="w-2 h-2"></i>
+            <div class="px-8 py-4 bg-[#1a1a1a] flex items-center justify-between">
+                <div class="flex items-center gap-6">
+                    <button class="flex items-center gap-2 text-sm font-bold hover:text-accent transition-colors">
+                        <i data-lucide="thumbs-up" class="w-5 h-5"></i> 1.2k
+                    </button>
+                    <button class="flex items-center gap-2 text-sm font-bold hover:text-accent transition-colors">
+                        <i data-lucide="thumbs-down" class="w-5 h-5"></i> 42
+                    </button>
+                </div>
+                <a id="sourceLink" href="#" target="_blank" rel="noopener noreferrer" class="play-button">
+                    Open in New Tab
                 </a>
             </div>
         </div>
@@ -199,18 +282,17 @@
                 noResults.classList.remove('hidden');
             } else {
                 noResults.classList.add('hidden');
-                games.forEach(game => {
+                games.forEach((game, index) => {
                     const card = document.createElement('div');
-                    card.className = 'game-card group cursor-pointer';
+                    card.className = 'game-card group';
+                    // Random rotation for that playful Poki look
+                    const rotation = (Math.random() * 4 - 2).toFixed(1);
+                    card.style.setProperty('--rotation', `${rotation}deg`);
+                    
                     card.innerHTML = `
-                        <div class="aspect-[4/3] relative overflow-hidden bg-[#f9f9f9]">
-                            <img src="${game.thumbnail}" alt="${game.title}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-80 group-hover:opacity-100" referrerpolicy="no-referrer">
-                        </div>
-                        <div class="p-6">
-                            <div class="flex justify-between items-baseline">
-                                <h3 class="font-medium text-sm tracking-tight">${game.title}</h3>
-                                <span class="text-[9px] uppercase tracking-widest text-muted">Play</span>
-                            </div>
+                        <img src="${game.thumbnail}" alt="${game.title}" referrerpolicy="no-referrer">
+                        <div class="game-card-info">
+                            <h3 class="game-card-title">${game.title}</h3>
                         </div>
                     `;
                     card.onclick = () => openGame(game);
@@ -238,11 +320,11 @@
 
         function updateModalSize() {
             if (isFullScreen) {
-                modalContent.classList.remove('max-w-6xl', 'h-[90vh]', 'sm:p-12');
-                modalContent.classList.add('fixed', 'inset-0');
+                modalContent.classList.remove('max-w-6xl', 'h-[85vh]');
+                modalContent.classList.add('fixed', 'inset-0', 'rounded-none', 'border-0');
             } else {
-                modalContent.classList.add('max-w-6xl', 'h-[90vh]');
-                modalContent.classList.remove('fixed', 'inset-0');
+                modalContent.classList.add('max-w-6xl', 'h-[85vh]');
+                modalContent.classList.remove('fixed', 'inset-0', 'rounded-none', 'border-0');
             }
         }
 
