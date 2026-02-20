@@ -10,5 +10,11 @@
     "title": "Twilight Observer",
     "url": "https://whitescarstudio.itch.io/to",
     "thumbnail": "https://picsum.photos/seed/twilight/400/300"
+  },
+  {
+    "id": "3",
+    "title": "Action Adventure",
+    "url": "https://html5.gamedistribution.com/8e9f68b6765f4c39a4c243c4dc6a4ec5/?gd_sdk_referrer_url=https://www.example.com/games/action-adventure",
+    "thumbnail": "https://picsum.photos/seed/action/400/300"
   }
 ]
